@@ -1,9 +1,13 @@
-from manager import Manager
+from .manager import Manager
 
-manager = Manager()
+class Parser():
+    def __init__(self, manager = None):
+        if manager == None:
+            manager = Manager()
+        self.manager = manager
 
-file_path = input("Enter the file path: ")
-with open(file_path) as f:
-    code = f.read()
+    def exec_file(self, file_path):
+        with open(file_path) as f:
+            code = f.read()
 
-exec(code, {}, {})
+        exec(code, {'remote_exec': self.manager.remote_exec}, {})

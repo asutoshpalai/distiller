@@ -1,4 +1,5 @@
 from server.manager import Manager
+from server.parser import Parser
 from client.executor import Executor
 import threading
 from time import sleep
@@ -20,6 +21,10 @@ sleep(1)
 result = man.remote_exec(fibo, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14])
 
 assert result == [1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610]
+
+par = Parser(man)
+par.exec_file("./test_code.py")
+
 import os
 os.kill(os.getpid(), 9)
 
