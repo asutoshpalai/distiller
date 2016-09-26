@@ -7,16 +7,8 @@ import threading
 
 function_store = {}
 
-if len(sys.argv) != 2:
-    print("""
-            Usage:
-            {} <server_root>
-            """.format(sys.argv[0]))
-    exit(1)
-
-server = sys.argv[1]
-
 app = Flask(__name__)
+server = False
 
 @app.route("/")
 def home():
@@ -48,6 +40,25 @@ def compute(id, func_name, data):
             data={"id": id, "status": "success", "data": ret})
     print("Finished coputing for id {}".format(id))
 
+def start_client(ser, port):
+    global server
+    server = ser
+    requests.post("{}/register".format(server), data = {"address": "http://localhost:{}".format(port)})
+    app.run(port=port)
+
+def stop_client():
+    app.stop()
+
 if __name__ == "__main__":
-    requests.post("{}/register".format(server), data = {"address": "http://localhost:6000"})
-    app.run(port=6000)
+    if len(sys.argv) != 2 and len(sys.argv) != 3:
+        print("""
+                Usage:
+                {} <server_root> [<port>=6000]
+                """.format(sys.argv[0]))
+        exit(1)
+
+    server = sys.argv[1]
+    port = sys.argv[2] if len(sys.argv) == 3 else 6000
+
+    start_client(server, port)
+
