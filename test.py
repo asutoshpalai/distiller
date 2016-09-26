@@ -1,5 +1,5 @@
 from server.manager import Manager
-import client
+from client.executor import Executor
 import threading
 from time import sleep
 
@@ -11,10 +11,11 @@ def fibo(x):
     return a
 
 sleep(1)
-th2 = threading.Thread(target=client.start_client, args=("http://localhost:5000", 6000)).start()
-th2 = threading.Thread(target=client.start_client, args=("http://localhost:5000", 7000)).start()
-th2 = threading.Thread(target=client.start_client, args=("http://localhost:5000", 8000)).start()
-th2 = threading.Thread(target=client.start_client, args=("http://localhost:5000", 9000)).start()
+Executor("http://localhost:5000", 6000)
+Executor("http://localhost:5000", 7000)
+Executor("http://localhost:5000", 8000)
+Executor("http://localhost:5000", 9000)
+
 sleep(1)
 result = man.remote_exec(fibo, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14])
 
