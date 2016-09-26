@@ -17,11 +17,11 @@ def home():
 @app.route("/compute", methods=['POST'])
 def receive_compute():
     id = request.form['id']
-    func_name = request.form['func']
+    func_name = request.form['function']
     data = pickle.loads(base64.b64decode(request.form['data']))
 
     threading.Thread(target=compute, args=(id, func_name, data, )).start()
-    print("Received request to compute func {} with {} args".format(func_name, len(data)))
+    app.logger.info("Received request to compute func {} with {} args".format(func_name, len(data)))
     return "computing..."
 
 def compute(id, func_name, data):
@@ -37,7 +37,8 @@ def compute(id, func_name, data):
 
     print(data)
     r = requests.post("{}/result".format(server),
-            data={"id": id, "status": "success", "data": ret})
+            data={"id": id, "status": "success", "result": ret})
+    print(r.text)
     print("Finished coputing for id {}".format(id))
 
 def start_client(ser, port):
