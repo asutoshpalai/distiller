@@ -4,18 +4,18 @@ import base64
 import cloudpickle, pickle
 
 class Connector():
-    def __init__(self, executor, server, port = 5000):
+    def __init__(self, executor, server, port, addr):
         self.app = Flask(__name__)
         self.executor = executor
-        self.port = port
+        self.port = port # TODO parse client address to get port
         self.server = server
-
+        self.addr = addr
         self.app.add_url_rule("/", "index", self.index)
         self.app.add_url_rule("/compute", "compute", self.compute, methods=['POST'])
 
     def start(self):
         print("Starting client...")
-        requests.post("{}/register".format(self.server), data = {"address": "http://localhost:{}".format(self.port)})
+        requests.post("{}/register".format(self.server), data = {"address": "{}".format(self.addr)})
         self.app.run(port=self.port)
 
     def fetch_function(self, name):

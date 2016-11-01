@@ -3,8 +3,8 @@ import pickle
 import threading
 
 class Executor():
-    def __init__(self, server, port=6000):
-        self.connector = Connector(self, server, port)
+    def __init__(self, server, port=6000, addr='http://localhost:6000'):
+        self.connector = Connector(self, server, port, addr)
         self.functions = {}
         self.server = server
         threading.Thread(target=self.connector.start).start()
