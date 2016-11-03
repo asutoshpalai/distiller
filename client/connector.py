@@ -1,3 +1,13 @@
+"""
+This class manages the connections to and from the server.
+
+This internals of this class is totally independent of other class, so that
+if required the protocol can be changed easily without requiring any change in
+other classes.
+
+This uses HTTP protocol to intreract with the server.
+"""
+
 from flask import Flask, request
 import requests
 import base64
@@ -14,6 +24,8 @@ class Connector():
         self.app.add_url_rule("/compute", "compute", self.compute, methods=['POST'])
 
     def start(self):
+        """Starts the internal server to be able to receive connections from
+        the server."""
         print("Starting client...")
         requests.post("{}/register".format(self.server), data = {"address": "{}".format(self.addr)})
         self.app.run(port=self.port)
@@ -23,6 +35,7 @@ class Connector():
         return base64.b64decode(r.text)
 
     def return_data(self, id, data):
+        """Sends the result of the computation to the server."""
         ret = base64.b64encode(cloudpickle.dumps(data))
         r = requests.post("{}/result".format(self.server),
                 data={"id": id, "status": "success", "result": ret})
@@ -32,6 +45,7 @@ class Connector():
         return "Welcome to distill client"
 
     def compute(self):
+        """HTTP request handler to receive computation requests at /compute."""
         id = request.form['id']
         func_name = request.form['function']
         data = pickle.loads(base64.b64decode(request.form['data']))
